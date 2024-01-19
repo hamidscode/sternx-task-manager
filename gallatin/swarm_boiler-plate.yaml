@@ -1,0 +1,53 @@
+version: "3.8"
+services:
+  gallatin_db_migrator:
+    entrypoint: npx sequelize-cli db:migrate
+    image: reg.sternx.de/gallatin:dev
+    deploy:
+      restart_policy:
+        condition: none
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [ node.role ==  manager ]
+    networks:
+      - sternx_gallatin
+    environment:
+      NODE_ENV: development
+      POSTGRES_HOST: 192.168.2.13
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: sternx
+      POSTGRES_PASS: sternx
+      POSTGRES_DB: task_manager
+
+  gallatin_service:
+    image: reg.sternx.de/gallatin:dev
+    deploy:
+      mode: replicated
+      replicas: 1
+    networks:
+      - sternx_gallatin
+    ports:
+      - "5000:5000"
+    environment:
+      DEBUG: "true"
+      NODE_ENV: development
+      ENV_FILES: false
+      LOG_DEBUG: *
+      LOG_LEVEL: trace
+      GRPC_PORT: 5000
+      POSTGRES_HOST: 192.168.2.13
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: sternx
+      POSTGRES_PASS: sternx
+      POSTGRES_DB: task_manager
+      RMQ_HOST: 127.0.0.1
+      RMQ_PORT: 5672
+      RMQ_USERNAME: admin
+      RMQ_PASSWORD: admin
+
+networks:
+  sternx_gallatin:
+    driver: overlay
+    name: gallatin
+    attachable: true

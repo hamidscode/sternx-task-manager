@@ -1,0 +1,63 @@
+version: '3.9' 
+
+networks:
+  sternx-task-manager:
+
+services:
+  postgres:
+    image: reg.ariaco.org/ariaco/postgres:15.3-alpine3.18
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: sternx
+      POSTGRES_PASSWORD: sternx
+      POSTGRES_DB: task_manager
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    networks:
+      - sternx-task-manager
+
+  redis:
+    image: redis:7.2.4-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - sternx-task-manager
+    volumes:
+      - redis_volume:/data
+
+  rabbitmq:
+    image: rabbitmq:3.12.12-management-alpine
+    hostname: message_broker_rabbit
+    networks:
+      - sternx-task-manager
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: "admin"
+      RABBITMQ_DEFAULT_PASS: "admin"
+    volumes:
+      - rmq_volume:/var/lib/rabbitmq
+      - rmq_log_volume:/var/log/rabbitmq
+
+  dozzle:
+    image: amir20/dozzle:latest
+    networks:
+      - sternx-task-manager
+    ports:
+      - "9999:8080"
+    environment:
+      DOZZLE_LEVEL: debug
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  mongo_volume:
+  redis_volume:
+  rmq_volume:
+  rmq_log_volume:

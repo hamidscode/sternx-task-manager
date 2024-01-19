@@ -11,8 +11,8 @@ export interface Meta {
 }
 
 export interface Task {
-  id: number;
-  parentId?: number | undefined;
+  id: string;
+  parentId?: string | undefined;
   title: string;
   description: string;
   createdAt: string;

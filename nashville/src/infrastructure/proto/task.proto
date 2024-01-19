@@ -13,8 +13,8 @@ message Meta {
 }
 
 message Task {
-  uint32 id = 1;
-  optional uint32 parentId = 2;
+  string id = 1;
+  optional string parentId = 2;
   string title = 3;
   string description = 4;
   string createdAt = 5;

@@ -1,0 +1,6 @@
+const path = require('path');
+module.exports = {
+   'seeders-path': path.resolve('src/migration', 'seeders'),
+   'migrations-path': path.resolve('src/migration', 'migrations'),
+   'config': path.resolve('src/migration/configs/', 'pg.config.js'),
+}

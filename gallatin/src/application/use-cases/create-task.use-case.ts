@@ -1,4 +1,4 @@
-import { Injectable, NotAcceptableException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { TaskMapper } from 'domain/services';
 import { CreateTaskRequest, Task } from 'infrastructure/interfaces';
@@ -20,7 +20,7 @@ export class CreateTaskUseCase {
         new GetTaskByIdQuery(request.parentId),
       );
       if (!parent) {
-        throw new NotAcceptableException(
+        throw new NotFoundException(
           `Parent task with id ${request.parentId} not found`,
         );
       }

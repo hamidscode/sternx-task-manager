@@ -4,7 +4,7 @@ import { TaskRepository } from 'domain/services';
 import { GetTaskByIdQuery } from './get-task-by-id.query';
 
 @QueryHandler(GetTaskByIdQuery)
-export class GetAllBookRequestsHandler
+export class GetTaskByIdQueryHandler
   implements IQueryHandler<GetTaskByIdQuery, TaskEntity>
 {
   constructor(private readonly taskRepository: TaskRepository) {}

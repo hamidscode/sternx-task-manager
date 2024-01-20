@@ -8,15 +8,19 @@ import {
   TASK_SERVICE_NAME,
   TaskServiceController,
   DeleteTaskRequest,
-  DeleteTaskResponse,
   DestroyTaskRequest,
   GetAllTasksRequest,
   GetAllTasksResponse,
   GetTaskByIdRequest,
   UpdateTaskRequest,
+  UpdateTaskResponse,
+  DestroyTaskResponse,
 } from 'infrastructure/interfaces';
-import { CreateTaskUseCase } from 'application/use-cases';
-import { Observable } from 'rxjs';
+import {
+  CreateTaskUseCase,
+  FetchTaskUseCase,
+  ManageTasksUseCase,
+} from 'application/use-cases';
 
 @GrpcService(TASK_SERVICE_NAME)
 export class TaskController
@@ -33,7 +37,11 @@ export class TaskController
 {
   private readonly logger = new Logger(TaskController.name);
 
-  constructor(private readonly createTaskUseCase: CreateTaskUseCase) {}
+  constructor(
+    private readonly createTaskUseCase: CreateTaskUseCase,
+    private readonly fetchTaskUseCase: FetchTaskUseCase,
+    private readonly manageTasksUseCase: ManageTasksUseCase,
+  ) {}
 
   private GrpcErrorHandler(error: any): { meta: Meta } {
     const status =
@@ -68,56 +76,101 @@ export class TaskController
   }
 
   @GrpcMethod(TASK_SERVICE_NAME, 'updateTask')
-  updateTask(
+  async updateTask(
     request: UpdateTaskRequest,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     metadata?: Metadata, // we can send and receive authorization data here
-  ): OneTaskResponse | Promise<OneTaskResponse> | Observable<OneTaskResponse> {
-    throw new Error('Method not implemented.');
+  ): Promise<UpdateTaskResponse> {
+    try {
+      const affected = await this.manageTasksUseCase.updateTask(request);
+      return {
+        meta: {
+          status: HttpStatus.OK,
+        },
+        affected_row_count: affected,
+      };
+    } catch (error) {
+      return this.GrpcErrorHandler(error);
+    }
   }
 
   @GrpcMethod(TASK_SERVICE_NAME, 'getTaskById')
-  getTaskById(
+  async getTaskById(
     request: GetTaskByIdRequest,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     metadata?: Metadata, // we can send and receive authorization data here
-  ): OneTaskResponse | Promise<OneTaskResponse> | Observable<OneTaskResponse> {
-    throw new Error('Method not implemented.');
+  ): Promise<OneTaskResponse> {
+    try {
+      const task = request.includeSubTasks
+        ? await this.fetchTaskUseCase.getTaskWithSubTasksById(request.id)
+        : await this.fetchTaskUseCase.getTaskById(request.id);
+      return {
+        meta: {
+          status: HttpStatus.OK,
+        },
+        task,
+      };
+    } catch (error) {
+      return this.GrpcErrorHandler(error);
+    }
   }
 
   @GrpcMethod(TASK_SERVICE_NAME, 'deleteTask')
-  deleteTask(
+  async deleteTask(
     request: DeleteTaskRequest,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     metadata?: Metadata, // we can send and receive authorization data here
-  ):
-    | DeleteTaskResponse
-    | Observable<DeleteTaskResponse>
-    | Promise<DeleteTaskResponse> {
-    throw new Error('Method not implemented.');
+  ): Promise<UpdateTaskResponse> {
+    try {
+      const affected = await this.manageTasksUseCase.deleteTask(request);
+      return {
+        meta: {
+          status: HttpStatus.OK,
+        },
+        affected_row_count: affected,
+      };
+    } catch (error) {
+      return this.GrpcErrorHandler(error);
+    }
   }
 
   @GrpcMethod(TASK_SERVICE_NAME, 'destroyTask')
-  destroyTask(
+  async destroyTask(
     request: DestroyTaskRequest,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     metadata?: Metadata, // we can send and receive authorization data here
-  ):
-    | DeleteTaskResponse
-    | Observable<DeleteTaskResponse>
-    | Promise<DeleteTaskResponse> {
-    throw new Error('Method not implemented.');
+  ): Promise<DestroyTaskResponse> {
+    try {
+      const affected = await this.manageTasksUseCase.destroyTask(request);
+      return {
+        meta: {
+          status: HttpStatus.OK,
+        },
+        destroyed_row_count: affected,
+      };
+    } catch (error) {
+      return this.GrpcErrorHandler(error);
+    }
   }
 
   @GrpcMethod(TASK_SERVICE_NAME, 'getAllTasks')
-  getAllTasks(
+  async getAllTasks(
     request: GetAllTasksRequest,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     metadata?: Metadata, // we can send and receive authorization data here
-  ):
-    | GetAllTasksResponse
-    | Observable<GetAllTasksResponse>
-    | Promise<GetAllTasksResponse> {
-    throw new Error('Method not implemented.');
+  ): Promise<GetAllTasksResponse> {
+    try {
+      const tasks = request.includeSubTasks
+        ? await this.fetchTaskUseCase.getAllTasksWithTree(request)
+        : await this.fetchTaskUseCase.getAllTasks(request);
+      return {
+        meta: {
+          status: HttpStatus.OK,
+        },
+        tasks,
+      };
+    } catch (error) {
+      return { ...this.GrpcErrorHandler(error), tasks: [] };
+    }
   }
 }

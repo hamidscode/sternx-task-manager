@@ -20,7 +20,6 @@ export class BaseMapper {
     ModelType extends BaseModel,
   >(entity: EntityType, type: new () => ModelType): ModelType {
     const model = new type();
-
     model.id = entity.id;
     model.created_at = entity.createdAt;
     model.updated_at = entity.updatedAt;

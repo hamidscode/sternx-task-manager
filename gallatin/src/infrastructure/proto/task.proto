@@ -24,7 +24,8 @@ message Task {
   string description = 4;
   string createdAt = 5;
   optional string updatedAt = 6;
-  repeated Task subTasks = 7;
+  optional string deletedAt = 7;
+  repeated Task subTasks = 8;
 }
 
 message CreateTaskRequest {
@@ -40,6 +41,7 @@ message OneTaskResponse {
 
 message GetTaskByIdRequest {
   string id = 1;
+  optional bool includeSubTasks = 3;
 }
 
 message UpdateTaskRequest {
@@ -81,6 +83,7 @@ message GetAllTasksRequest {
     optional string parentId = 2;
   }
   optional Query query = 2;
+  optional bool includeSubTasks = 3;
 }
 
 message GetAllTasksResponse {

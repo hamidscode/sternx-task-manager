@@ -26,7 +26,8 @@ export abstract class BaseFactory<
     const model = this.mapper.createModelFromEntity(entity as EntityType);
     Object.keys(model.dataValues).forEach(
       (key) =>
-        model.dataValues[key] === undefined && delete model.dataValues[key],
+        model.dataValues[key] === undefined ||
+        (key === 'id' && delete model.dataValues[key]),
     );
 
     return this.baseModel.update({ ...model.dataValues }, { where });
@@ -34,10 +35,10 @@ export abstract class BaseFactory<
 
   async deleteOne(id: string): Promise<[affectedCount: number]> {
     return this.baseModel.update(
-      { deletedAt: new Date() },
+      { deleted_at: new Date() },
       {
         where: {
-          deletedAt: { [Op.eq]: null },
+          deleted_at: { [Op.eq]: null },
           id,
         },
       },

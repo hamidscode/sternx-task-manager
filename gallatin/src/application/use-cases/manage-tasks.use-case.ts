@@ -1,31 +1,47 @@
-import { Injectable, NotAcceptableException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { TaskMapper } from 'domain/services';
 import {
-  CreateTaskRequest,
   DeleteTaskRequest,
   DestroyTaskRequest,
-  Task,
-  UpdateTaskRequest
+  UpdateTaskRequest,
 } from 'infrastructure/interfaces';
-import { CreateTaskCommand } from 'application/services';
-import { TaskSerializer } from 'application/serializers';
-import { GetTaskByIdQuery } from 'application/services/queries';
+import {
+  UpdateTaskCommand,
+  DeleteTaskCommand,
+  DestroyTaskCommand,
+} from 'application/services';
+import { FetchTaskUseCase } from './fetch-task.use-case';
 
 @Injectable()
-export class CreateTaskUseCase {
+export class ManageTasksUseCase {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
     private readonly taskMapper: TaskMapper,
+    private readonly fetchTaskUseCase: FetchTaskUseCase,
   ) {}
-  async updateTask(request: UpdateTaskRequest): Promise<Task> {
-
+  async updateTask(request: UpdateTaskRequest): Promise<number> {
+    if (!request.id || !request.update) {
+      throw new BadRequestException('id and update are required');
+    }
+    await this.fetchTaskUseCase.getTaskById(request.id);
+    if (request.update.parentId === '') {
+      request.update.parentId = null;
+    }
+    const entity = this.taskMapper.convertRequestToEntity({
+      ...request.update,
+      id: request.id,
+    });
+    return this.commandBus.execute(new UpdateTaskCommand(request.id, entity));
   }
-  async deleteTask(request: DeleteTaskRequest): Promise<DeleteTaskResponse> {
-
+  async deleteTask(request: DeleteTaskRequest): Promise<number> {
+    await this.fetchTaskUseCase.getTaskById(request.id);
+    return this.commandBus.execute(new DeleteTaskCommand(request.id));
   }
 
-  async destroyTask(request: DestroyTaskRequest): Promise<DeleteTaskResponse> {
+  async destroyTask(request: DestroyTaskRequest): Promise<number> {
+    await this.fetchTaskUseCase.getTaskById(request.id);
+    return this.commandBus.execute(new DestroyTaskCommand(request.id));
   }
 }

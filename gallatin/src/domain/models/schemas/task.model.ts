@@ -32,9 +32,9 @@ export class TaskModel extends BaseModel {
   @Column(DataType.TEXT)
   description?: string;
 
-  @HasMany(() => TaskModel, 'id')
+  @HasMany(() => TaskModel, 'parent_id')
   sub_tasks?: TaskModel[];
 
-  @BelongsTo(() => TaskModel)
+  @BelongsTo(() => TaskModel, 'parent_id')
   parent?: TaskModel;
 }

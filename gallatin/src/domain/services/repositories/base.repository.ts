@@ -1,6 +1,6 @@
 import { BaseEntity, BaseModel } from 'domain/models';
 import { FilterType, findAndCountAll } from 'infrastructure/database';
-import { Op, WhereOptions } from 'sequelize';
+import { Op } from 'sequelize';
 import { MapperInterface } from '../mappers';
 
 export abstract class BaseRepository<
@@ -13,12 +13,12 @@ export abstract class BaseRepository<
   ) {}
 
   async findOne(
-    where: WhereOptions<EntityType>,
+    filter: FilterType<ModelType>,
     fetchDeleted = false,
   ): Promise<EntityType> {
-    const result = await this.baseModel.findOne({ where });
+    const result = await this.baseModel.findOne(filter);
 
-    if (result && !fetchDeleted && result.deletedAt) return null;
+    if (result && !fetchDeleted && result.deleted_at) return null;
 
     return this.mapper.createEntityFromModel(result as ModelType);
   }
@@ -26,7 +26,7 @@ export abstract class BaseRepository<
   async findOneById(id: string, fetchDeleted = false): Promise<EntityType> {
     const result = await this.baseModel.findByPk(id);
 
-    if (!result || (result && !fetchDeleted && result.deletedAt)) return null;
+    if (!result || (result && !fetchDeleted && result.deleted_at)) return null;
 
     return this.mapper.createEntityFromModel(result as ModelType);
   }
@@ -37,7 +37,7 @@ export abstract class BaseRepository<
   ): Promise<findAndCountAll<EntityType>> {
     if (!filter.where) filter.where = {};
 
-    if (!fetchDeleted) filter.where['deletedAt'] = { [Op.eq]: null };
+    if (!fetchDeleted) filter.where['deleted_at'] = { [Op.eq]: null };
 
     const result = await this.baseModel.findAndCountAll(filter);
 

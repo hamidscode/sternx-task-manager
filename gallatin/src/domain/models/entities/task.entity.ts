@@ -5,7 +5,7 @@ export class TaskEntity extends BaseEntity {
   title: string;
   description: string;
 
-  sub_tasks?: TaskEntity[];
+  subTasks?: TaskEntity[];
 
   parent?: TaskEntity;
 

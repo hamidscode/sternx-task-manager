@@ -5,10 +5,10 @@ package task;
 
 service TaskService {
   rpc CreateTask (CreateTaskRequest) returns (OneTaskResponse) {}
-  rpc UpdateTask (UpdateTaskRequest) returns (OneTaskResponse) {}
   rpc GetTaskById (GetTaskByIdRequest) returns (OneTaskResponse) {}
-  rpc DeleteTask (DeleteTaskRequest) returns (DeleteTaskResponse) {}
-  rpc DestroyTask (DestroyTaskRequest) returns (DeleteTaskResponse) {}
+  rpc UpdateTask (UpdateTaskRequest) returns (UpdateTaskResponse) {}
+  rpc DeleteTask (DeleteTaskRequest) returns (UpdateTaskResponse) {}
+  rpc DestroyTask (DestroyTaskRequest) returns (DestroyTaskResponse) {}
   rpc GetAllTasks (GetAllTasksRequest) returns (GetAllTasksResponse) {}
 }
 
@@ -38,6 +38,10 @@ message OneTaskResponse {
   optional Task task = 2;
 }
 
+message GetTaskByIdRequest {
+  string id = 1;
+}
+
 message UpdateTaskRequest {
   string id = 1;
   message UpdateData {
@@ -48,8 +52,9 @@ message UpdateTaskRequest {
   UpdateData update = 2;
 }
 
-message GetTaskByIdRequest {
-  string id = 1;
+message UpdateTaskResponse {
+  Meta meta = 1;
+  optional int32 affected_row_count = 2;
 }
 
 message DeleteTaskRequest {
@@ -60,8 +65,9 @@ message DestroyTaskRequest {
   string id = 1;
 }
 
-message DeleteTaskResponse {
+message DestroyTaskResponse {
   Meta meta = 1;
+  optional int32 destroyed_row_count = 2;
 }
 
 message GetAllTasksRequest {

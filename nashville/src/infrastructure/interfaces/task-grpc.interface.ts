@@ -31,6 +31,10 @@ export interface OneTaskResponse {
   task?: Task | undefined;
 }
 
+export interface GetTaskByIdRequest {
+  id: string;
+}
+
 export interface UpdateTaskRequest {
   id: string;
   update: UpdateTaskRequest_UpdateData | undefined;
@@ -42,8 +46,9 @@ export interface UpdateTaskRequest_UpdateData {
   parentId?: string | undefined;
 }
 
-export interface GetTaskByIdRequest {
-  id: string;
+export interface UpdateTaskResponse {
+  meta: Meta | undefined;
+  affected_row_count?: number | undefined;
 }
 
 export interface DeleteTaskRequest {
@@ -54,8 +59,9 @@ export interface DestroyTaskRequest {
   id: string;
 }
 
-export interface DeleteTaskResponse {
+export interface DestroyTaskResponse {
   meta: Meta | undefined;
+  destroyed_row_count?: number | undefined;
 }
 
 export interface GetAllTasksRequest {
@@ -83,13 +89,13 @@ export const TASK_PACKAGE_NAME = "task";
 export interface TaskServiceClient {
   createTask(request: CreateTaskRequest, metadata?: Metadata): Observable<OneTaskResponse>;
 
-  updateTask(request: UpdateTaskRequest, metadata?: Metadata): Observable<OneTaskResponse>;
-
   getTaskById(request: GetTaskByIdRequest, metadata?: Metadata): Observable<OneTaskResponse>;
 
-  deleteTask(request: DeleteTaskRequest, metadata?: Metadata): Observable<DeleteTaskResponse>;
+  updateTask(request: UpdateTaskRequest, metadata?: Metadata): Observable<UpdateTaskResponse>;
 
-  destroyTask(request: DestroyTaskRequest, metadata?: Metadata): Observable<DeleteTaskResponse>;
+  deleteTask(request: DeleteTaskRequest, metadata?: Metadata): Observable<UpdateTaskResponse>;
+
+  destroyTask(request: DestroyTaskRequest, metadata?: Metadata): Observable<DestroyTaskResponse>;
 
   getAllTasks(request: GetAllTasksRequest, metadata?: Metadata): Observable<GetAllTasksResponse>;
 }
@@ -100,25 +106,25 @@ export interface TaskServiceController {
     metadata?: Metadata,
   ): Promise<OneTaskResponse> | Observable<OneTaskResponse> | OneTaskResponse;
 
-  updateTask(
-    request: UpdateTaskRequest,
-    metadata?: Metadata,
-  ): Promise<OneTaskResponse> | Observable<OneTaskResponse> | OneTaskResponse;
-
   getTaskById(
     request: GetTaskByIdRequest,
     metadata?: Metadata,
   ): Promise<OneTaskResponse> | Observable<OneTaskResponse> | OneTaskResponse;
 
+  updateTask(
+    request: UpdateTaskRequest,
+    metadata?: Metadata,
+  ): Promise<UpdateTaskResponse> | Observable<UpdateTaskResponse> | UpdateTaskResponse;
+
   deleteTask(
     request: DeleteTaskRequest,
     metadata?: Metadata,
-  ): Promise<DeleteTaskResponse> | Observable<DeleteTaskResponse> | DeleteTaskResponse;
+  ): Promise<UpdateTaskResponse> | Observable<UpdateTaskResponse> | UpdateTaskResponse;
 
   destroyTask(
     request: DestroyTaskRequest,
     metadata?: Metadata,
-  ): Promise<DeleteTaskResponse> | Observable<DeleteTaskResponse> | DeleteTaskResponse;
+  ): Promise<DestroyTaskResponse> | Observable<DestroyTaskResponse> | DestroyTaskResponse;
 
   getAllTasks(
     request: GetAllTasksRequest,
@@ -130,8 +136,8 @@ export function TaskServiceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = [
       "createTask",
-      "updateTask",
       "getTaskById",
+      "updateTask",
       "deleteTask",
       "destroyTask",
       "getAllTasks",

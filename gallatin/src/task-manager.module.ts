@@ -1,5 +1,15 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import {
+  GALLATIN_AMQP_SERVICE,
+  GALLATIN_QUEUE,
+} from 'infrastructure/constants';
+import { SequelizeModule } from '@nestjs/sequelize';
+import { RMQ_CONFIG } from 'infrastructure/config';
+import { CqrsModule } from '@nestjs/cqrs';
+import { Models } from 'domain/models';
+import { Mappers, Repositories, Factories } from 'domain/service';
 
 @Module({
   imports: [
@@ -12,8 +22,35 @@ import { ConfigModule } from '@nestjs/config';
         ? process.env.ENV_FILES !== 'true'
         : false,
     }),
+    CqrsModule.forRoot(),
+    ClientsModule.register([
+      {
+        name: GALLATIN_AMQP_SERVICE,
+        transport: Transport.RMQ,
+        options: {
+          urls: [RMQ_CONFIG()],
+          queue: GALLATIN_QUEUE,
+          queueOptions: {
+            durable: true,
+          },
+        },
+      },
+    ]),
+    SequelizeModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        dialect: 'postgres',
+        host: configService.get<string>('POSTGRES_HOST', 'localhost'),
+        port: parseInt(configService.get<string>('POSTGRES_PORT', '5432')),
+        username: configService.get<string>('POSTGRES_USER', 'sternx'),
+        password: configService.get<string>('POSTGRES_PASS', 'sternx'),
+        database: configService.get<string>('POSTGRES_DB', 'task_manager'),
+        Models,
+      }),
+    }),
+    SequelizeModule.forFeature(Models),
   ],
   controllers: [],
-  providers: [],
+  providers: [...Mappers, ...Repositories, ...Factories],
 })
 export class TaskManagerModule {}

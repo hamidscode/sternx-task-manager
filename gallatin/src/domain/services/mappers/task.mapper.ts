@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { BaseMapper } from './base.mapper';
 import { TaskEntity, TaskModel } from 'domain/models';
-import { MapperInterface } from 'domain/service/mappers/mapper.interface';
+import { MapperInterface } from 'domain/services/mappers/mapper.interface';
+import { CreateTaskRequest } from 'infrastructure/interfaces';
 
 @Injectable()
 export class TaskMapper
@@ -45,5 +46,13 @@ export class TaskMapper
       taskModel.parent = TaskMapper.createModelFromEntity(entity.parent);
 
     return taskModel;
+  }
+
+  convertRequestToEntity(request: CreateTaskRequest): TaskEntity {
+    const entity = new TaskEntity();
+    entity.title = request.title;
+    entity.description = request.description;
+    entity.parentId = request.parentId;
+    return entity;
   }
 }

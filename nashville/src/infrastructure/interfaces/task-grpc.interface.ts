@@ -17,11 +17,13 @@ export interface Task {
   description: string;
   createdAt: string;
   updatedAt?: string | undefined;
+  subTasks: Task[];
 }
 
 export interface CreateTaskRequest {
-  name: string;
+  title: string;
   description: string;
+  parentId?: string | undefined;
 }
 
 export interface CreateTaskResponse {

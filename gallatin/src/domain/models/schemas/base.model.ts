@@ -7,11 +7,13 @@ import {
   Model,
   PrimaryKey,
   UpdatedAt,
+  Default,
 } from 'sequelize-typescript';
 
 export class BaseModel extends Model {
   @PrimaryKey
   @AllowNull(false)
+  @Default(DataType.UUIDV4)
   @Column(DataType.UUID)
   id: string;
 

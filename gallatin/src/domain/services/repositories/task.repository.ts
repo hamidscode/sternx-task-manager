@@ -5,10 +5,7 @@ import { TaskMapper } from '../mappers';
 import { InjectModel } from '@nestjs/sequelize';
 
 @Injectable()
-export class TaskRepository extends BaseRepository<
-  TaskModel,
-  TaskEntity
-> {
+export class TaskRepository extends BaseRepository<TaskModel, TaskEntity> {
   constructor(
     private readonly taskMapper: TaskMapper,
     @InjectModel(TaskModel)

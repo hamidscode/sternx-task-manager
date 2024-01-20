@@ -19,11 +19,13 @@ message Task {
   string description = 4;
   string createdAt = 5;
   optional string updatedAt = 6;
+  repeated Task subTasks = 7;
 }
 
 message CreateTaskRequest {
-  string name = 1;
+  string title = 1;
   string description = 2;
+  optional string parentId = 3;
 }
 
 message CreateTaskResponse {

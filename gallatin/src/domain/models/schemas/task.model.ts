@@ -8,6 +8,7 @@ import {
   BelongsTo,
   Index,
   Table,
+  Default,
 } from 'sequelize-typescript';
 
 @Table({
@@ -16,21 +17,24 @@ import {
 })
 export class TaskModel extends BaseModel {
   @ForeignKey(() => TaskModel)
-  @AllowNull(false)
+  @AllowNull(true)
   @Index
   @Column(DataType.UUID)
-  parent_id: string;
+  parent_id?: string;
 
+  @AllowNull(false)
   @Index
   @Column(DataType.STRING(256))
-  title?: string;
+  title: string;
 
+  @AllowNull(true)
+  @Default('')
   @Column(DataType.TEXT)
   description?: string;
 
   @HasMany(() => TaskModel, 'id')
-  sub_tasks: TaskModel[];
+  sub_tasks?: TaskModel[];
 
   @BelongsTo(() => TaskModel)
-  parent: TaskModel;
+  parent?: TaskModel;
 }

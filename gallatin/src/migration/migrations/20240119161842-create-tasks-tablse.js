@@ -13,6 +13,7 @@ module.exports = {
               allowNull: false,
               unique: true,
               primaryKey: true,
+              defaultValue: Sequelize.UUIDV4,
             },
             parent_id: {
               type: Sequelize.UUID,
@@ -20,10 +21,11 @@ module.exports = {
             },
             title: {
               type: Sequelize.STRING(256),
-              allowNull: true,
+              allowNull: false,
             },
             description: {
               type: Sequelize.TEXT,
+              defaultValue: '',
               allowNull: true,
             },
             created_at: {

@@ -26,7 +26,7 @@ export abstract class BaseRepository<
   async findOneById(id: string, fetchDeleted = false): Promise<EntityType> {
     const result = await this.baseModel.findByPk(id);
 
-    if (result && !fetchDeleted && result.deletedAt) return null;
+    if (!result || (result && !fetchDeleted && result.deletedAt)) return null;
 
     return this.mapper.createEntityFromModel(result as ModelType);
   }

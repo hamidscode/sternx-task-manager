@@ -12,18 +12,19 @@ export interface Meta {
 
 export interface Task {
   id: string;
-  parentId?: string | undefined;
+  parent_id?: string | undefined;
   title: string;
   description: string;
-  createdAt: string;
-  updatedAt?: string | undefined;
-  subTasks: Task[];
+  created_at: string;
+  updated_at?: string | undefined;
+  deleted_at?: string | undefined;
+  sub_tasks: Task[];
 }
 
 export interface CreateTaskRequest {
   title: string;
-  description: string;
-  parentId?: string | undefined;
+  description?: string | undefined;
+  parent_id?: string | undefined;
 }
 
 export interface OneTaskResponse {
@@ -33,6 +34,7 @@ export interface OneTaskResponse {
 
 export interface GetTaskByIdRequest {
   id: string;
+  include_sub_tasks?: boolean | undefined;
 }
 
 export interface UpdateTaskRequest {
@@ -43,7 +45,7 @@ export interface UpdateTaskRequest {
 export interface UpdateTaskRequest_UpdateData {
   title?: string | undefined;
   description?: string | undefined;
-  parentId?: string | undefined;
+  parent_id?: string | undefined;
 }
 
 export interface UpdateTaskResponse {
@@ -67,6 +69,7 @@ export interface DestroyTaskResponse {
 export interface GetAllTasksRequest {
   pagination?: GetAllTasksRequest_Pagination | undefined;
   query?: GetAllTasksRequest_Query | undefined;
+  include_sub_tasks?: boolean | undefined;
 }
 
 export interface GetAllTasksRequest_Pagination {
@@ -76,7 +79,7 @@ export interface GetAllTasksRequest_Pagination {
 
 export interface GetAllTasksRequest_Query {
   title?: string | undefined;
-  parentId?: string | undefined;
+  parent_id?: string | undefined;
 }
 
 export interface GetAllTasksResponse {

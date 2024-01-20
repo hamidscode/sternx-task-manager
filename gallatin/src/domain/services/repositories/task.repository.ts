@@ -52,7 +52,7 @@ export class TaskRepository extends BaseRepository<TaskModel, TaskEntity> {
     fetchDeleted: boolean = false,
   ): Promise<TaskEntity> {
     const task = await super.findOneById(id, fetchDeleted);
-    task.subTasks = await this.getHierarchyTree(task.id);
+    if (task) task.subTasks = await this.getHierarchyTree(task.id);
     return task;
   }
 

@@ -101,7 +101,7 @@ export class TaskController
     metadata?: Metadata, // we can send and receive authorization data here
   ): Promise<OneTaskResponse> {
     try {
-      const task = request.includeSubTasks
+      const task = request.include_sub_tasks
         ? await this.fetchTaskUseCase.getTaskWithSubTasksById(request.id)
         : await this.fetchTaskUseCase.getTaskById(request.id);
       return {
@@ -160,7 +160,7 @@ export class TaskController
     metadata?: Metadata, // we can send and receive authorization data here
   ): Promise<GetAllTasksResponse> {
     try {
-      const tasks = request.includeSubTasks
+      const tasks = request.include_sub_tasks
         ? await this.fetchTaskUseCase.getAllTasksWithTree(request)
         : await this.fetchTaskUseCase.getAllTasks(request);
       return {

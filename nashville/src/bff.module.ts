@@ -3,6 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { TASK_PACKAGE_NAME } from 'infrastructure/interfaces';
 import { join } from 'path';
+import {Controllers} from "presentation/controllers";
+import {Proxies} from "application/services";
 
 @Module({
   imports: [
@@ -50,7 +52,7 @@ import { join } from 'path';
       ],
     }),
   ],
-  controllers: [],
-  providers: [],
+  controllers: [...Controllers],
+  providers: [...Proxies],
 })
 export class BffModule {}

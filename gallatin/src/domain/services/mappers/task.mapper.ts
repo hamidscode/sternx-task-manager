@@ -57,15 +57,12 @@ export class TaskMapper
       | (UpdateTaskRequest_UpdateData & { id: string }),
   ): TaskEntity {
     const entity = new TaskEntity();
-    console.log(request);
     if ('id' in request) {
-      console.log('id in request');
       entity.id = request.id;
     }
-    console.log(entity.id);
     entity.title = request?.title;
     entity.description = request?.description;
-    entity.parentId = request?.parentId;
+    entity.parentId = request?.parent_id;
     return entity;
   }
 }

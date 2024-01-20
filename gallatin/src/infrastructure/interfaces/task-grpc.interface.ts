@@ -1,9 +1,9 @@
 /* eslint-disable */
-import { Metadata } from '@grpc/grpc-js';
-import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
+import { Metadata } from "@grpc/grpc-js";
+import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
+import { Observable } from "rxjs";
 
-export const protobufPackage = 'task';
+export const protobufPackage = "task";
 
 export interface Meta {
   status: number;
@@ -12,19 +12,19 @@ export interface Meta {
 
 export interface Task {
   id: string;
-  parentId?: string | undefined;
+  parent_id?: string | undefined;
   title: string;
   description: string;
-  createdAt: string;
-  updatedAt?: string | undefined;
-  deletedAt?: string | undefined;
-  subTasks: Task[];
+  created_at: string;
+  updated_at?: string | undefined;
+  deleted_at?: string | undefined;
+  sub_tasks: Task[];
 }
 
 export interface CreateTaskRequest {
   title: string;
-  description: string;
-  parentId?: string | undefined;
+  description?: string | undefined;
+  parent_id?: string | undefined;
 }
 
 export interface OneTaskResponse {
@@ -34,7 +34,7 @@ export interface OneTaskResponse {
 
 export interface GetTaskByIdRequest {
   id: string;
-  includeSubTasks?: boolean | undefined;
+  include_sub_tasks?: boolean | undefined;
 }
 
 export interface UpdateTaskRequest {
@@ -45,7 +45,7 @@ export interface UpdateTaskRequest {
 export interface UpdateTaskRequest_UpdateData {
   title?: string | undefined;
   description?: string | undefined;
-  parentId?: string | undefined;
+  parent_id?: string | undefined;
 }
 
 export interface UpdateTaskResponse {
@@ -69,7 +69,7 @@ export interface DestroyTaskResponse {
 export interface GetAllTasksRequest {
   pagination?: GetAllTasksRequest_Pagination | undefined;
   query?: GetAllTasksRequest_Query | undefined;
-  includeSubTasks?: boolean | undefined;
+  include_sub_tasks?: boolean | undefined;
 }
 
 export interface GetAllTasksRequest_Pagination {
@@ -79,7 +79,7 @@ export interface GetAllTasksRequest_Pagination {
 
 export interface GetAllTasksRequest_Query {
   title?: string | undefined;
-  parentId?: string | undefined;
+  parent_id?: string | undefined;
 }
 
 export interface GetAllTasksResponse {
@@ -87,38 +87,20 @@ export interface GetAllTasksResponse {
   tasks: Task[];
 }
 
-export const TASK_PACKAGE_NAME = 'task';
+export const TASK_PACKAGE_NAME = "task";
 
 export interface TaskServiceClient {
-  createTask(
-    request: CreateTaskRequest,
-    metadata?: Metadata,
-  ): Observable<OneTaskResponse>;
+  createTask(request: CreateTaskRequest, metadata?: Metadata): Observable<OneTaskResponse>;
 
-  getTaskById(
-    request: GetTaskByIdRequest,
-    metadata?: Metadata,
-  ): Observable<OneTaskResponse>;
+  getTaskById(request: GetTaskByIdRequest, metadata?: Metadata): Observable<OneTaskResponse>;
 
-  updateTask(
-    request: UpdateTaskRequest,
-    metadata?: Metadata,
-  ): Observable<UpdateTaskResponse>;
+  updateTask(request: UpdateTaskRequest, metadata?: Metadata): Observable<UpdateTaskResponse>;
 
-  deleteTask(
-    request: DeleteTaskRequest,
-    metadata?: Metadata,
-  ): Observable<UpdateTaskResponse>;
+  deleteTask(request: DeleteTaskRequest, metadata?: Metadata): Observable<UpdateTaskResponse>;
 
-  destroyTask(
-    request: DestroyTaskRequest,
-    metadata?: Metadata,
-  ): Observable<DestroyTaskResponse>;
+  destroyTask(request: DestroyTaskRequest, metadata?: Metadata): Observable<DestroyTaskResponse>;
 
-  getAllTasks(
-    request: GetAllTasksRequest,
-    metadata?: Metadata,
-  ): Observable<GetAllTasksResponse>;
+  getAllTasks(request: GetAllTasksRequest, metadata?: Metadata): Observable<GetAllTasksResponse>;
 }
 
 export interface TaskServiceController {
@@ -135,70 +117,44 @@ export interface TaskServiceController {
   updateTask(
     request: UpdateTaskRequest,
     metadata?: Metadata,
-  ):
-    | Promise<UpdateTaskResponse>
-    | Observable<UpdateTaskResponse>
-    | UpdateTaskResponse;
+  ): Promise<UpdateTaskResponse> | Observable<UpdateTaskResponse> | UpdateTaskResponse;
 
   deleteTask(
     request: DeleteTaskRequest,
     metadata?: Metadata,
-  ):
-    | Promise<UpdateTaskResponse>
-    | Observable<UpdateTaskResponse>
-    | UpdateTaskResponse;
+  ): Promise<UpdateTaskResponse> | Observable<UpdateTaskResponse> | UpdateTaskResponse;
 
   destroyTask(
     request: DestroyTaskRequest,
     metadata?: Metadata,
-  ):
-    | Promise<DestroyTaskResponse>
-    | Observable<DestroyTaskResponse>
-    | DestroyTaskResponse;
+  ): Promise<DestroyTaskResponse> | Observable<DestroyTaskResponse> | DestroyTaskResponse;
 
   getAllTasks(
     request: GetAllTasksRequest,
     metadata?: Metadata,
-  ):
-    | Promise<GetAllTasksResponse>
-    | Observable<GetAllTasksResponse>
-    | GetAllTasksResponse;
+  ): Promise<GetAllTasksResponse> | Observable<GetAllTasksResponse> | GetAllTasksResponse;
 }
 
 export function TaskServiceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = [
-      'createTask',
-      'getTaskById',
-      'updateTask',
-      'deleteTask',
-      'destroyTask',
-      'getAllTasks',
+      "createTask",
+      "getTaskById",
+      "updateTask",
+      "deleteTask",
+      "destroyTask",
+      "getAllTasks",
     ];
     for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(
-        constructor.prototype,
-        method,
-      );
-      GrpcMethod('TaskService', method)(
-        constructor.prototype[method],
-        method,
-        descriptor,
-      );
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcMethod("TaskService", method)(constructor.prototype[method], method, descriptor);
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(
-        constructor.prototype,
-        method,
-      );
-      GrpcStreamMethod('TaskService', method)(
-        constructor.prototype[method],
-        method,
-        descriptor,
-      );
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcStreamMethod("TaskService", method)(constructor.prototype[method], method, descriptor);
     }
   };
 }
 
-export const TASK_SERVICE_NAME = 'TaskService';
+export const TASK_SERVICE_NAME = "TaskService";

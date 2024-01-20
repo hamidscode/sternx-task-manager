@@ -26,8 +26,8 @@ export class ManageTasksUseCase {
       throw new BadRequestException('id and update are required');
     }
     await this.fetchTaskUseCase.getTaskById(request.id);
-    if (request.update.parentId === '') {
-      request.update.parentId = null;
+    if (request.update.parent_id === '') {
+      request.update.parent_id = null;
     }
     const entity = this.taskMapper.convertRequestToEntity({
       ...request.update,

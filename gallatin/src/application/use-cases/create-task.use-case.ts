@@ -15,13 +15,13 @@ export class CreateTaskUseCase {
   ) {}
 
   async createTask(request: CreateTaskRequest): Promise<Task> {
-    if (request.parentId) {
+    if (request.parent_id) {
       const parent = await this.queryBus.execute(
-        new GetTaskByIdQuery(request.parentId),
+        new GetTaskByIdQuery(request.parent_id),
       );
       if (!parent) {
         throw new NotFoundException(
-          `Parent task with id ${request.parentId} not found`,
+          `Parent task with id ${request.parent_id} not found`,
         );
       }
     }

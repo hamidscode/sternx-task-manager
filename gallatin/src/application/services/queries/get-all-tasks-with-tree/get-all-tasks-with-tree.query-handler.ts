@@ -30,8 +30,8 @@ export class GetAllTasksWithTreeQueryHandler
     }
     return this.taskRepository.findAllWithTree({
       where: {
-        ...(query?.parentId
-          ? { parent_id: query.parentId }
+        ...(query?.parent_id
+          ? { parent_id: query.parent_id }
           : { parent_id: { [Op.eq]: null } }),
         ...(query?.title && { title: { [Op.like]: `%${query.title}%` } }),
       },

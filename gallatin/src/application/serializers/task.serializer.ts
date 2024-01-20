@@ -3,24 +3,24 @@ import { TaskEntity } from 'domain/models';
 
 export class TaskSerializer implements Task {
   id: string;
-  parentId?: string | undefined;
+  parent_id?: string | undefined;
   title: string;
   description: string;
-  createdAt: string;
-  updatedAt?: string | undefined;
-  deletedAt?: string | undefined;
-  subTasks: TaskSerializer[];
+  created_at: string;
+  updated_at?: string | undefined;
+  deleted_at?: string | undefined;
+  sub_tasks: TaskSerializer[];
 
   constructor(taskEntity: TaskEntity) {
     this.id = taskEntity.id;
-    this.parentId = taskEntity?.parentId;
+    this.parent_id = taskEntity?.parentId;
     this.title = taskEntity.title;
     this.description = taskEntity?.description;
-    this.createdAt = taskEntity.createdAt.toString();
-    this.updatedAt = taskEntity?.updatedAt?.toString();
-    this.deletedAt = taskEntity?.deletedAt?.toString();
+    this.created_at = taskEntity.createdAt.toString();
+    this.updated_at = taskEntity?.updatedAt?.toString();
+    this.deleted_at = taskEntity?.deletedAt?.toString();
     if (taskEntity.subTasks?.length) {
-      this.subTasks = taskEntity.subTasks.map((e) => new TaskSerializer(e));
+      this.sub_tasks = taskEntity.subTasks.map((e) => new TaskSerializer(e));
     }
   }
 }

@@ -29,7 +29,7 @@ export class GetAllTasksQueryHandler
     }
     return this.taskRepository.findAll({
       where: {
-        ...(query?.parentId && { parent_id: query.parentId }),
+        ...(query?.parent_id && { parent_id: query.parent_id }),
         ...(query?.title && { title: { [Op.like]: `%${query.title}%` } }),
       },
       limit: pagination.limit,

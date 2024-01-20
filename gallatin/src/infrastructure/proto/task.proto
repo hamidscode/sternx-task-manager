@@ -19,19 +19,19 @@ message Meta {
 
 message Task {
   string id = 1;
-  optional string parentId = 2;
+  optional string parent_id = 2;
   string title = 3;
   string description = 4;
-  string createdAt = 5;
-  optional string updatedAt = 6;
-  optional string deletedAt = 7;
-  repeated Task subTasks = 8;
+  string created_at = 5;
+  optional string updated_at = 6;
+  optional string deleted_at = 7;
+  repeated Task sub_tasks = 8;
 }
 
 message CreateTaskRequest {
   string title = 1;
-  string description = 2;
-  optional string parentId = 3;
+  optional string description = 2;
+  optional string parent_id = 3;
 }
 
 message OneTaskResponse {
@@ -41,7 +41,7 @@ message OneTaskResponse {
 
 message GetTaskByIdRequest {
   string id = 1;
-  optional bool includeSubTasks = 3;
+  optional bool include_sub_tasks = 2;
 }
 
 message UpdateTaskRequest {
@@ -49,7 +49,7 @@ message UpdateTaskRequest {
   message UpdateData {
     optional string title = 1;
     optional string description = 2;
-    optional string parentId = 3;
+    optional string parent_id = 3;
   }
   UpdateData update = 2;
 }
@@ -80,10 +80,10 @@ message GetAllTasksRequest {
   optional Pagination pagination = 1;
   message Query {
     optional string title = 1;
-    optional string parentId = 2;
+    optional string parent_id = 2;
   }
   optional Query query = 2;
-  optional bool includeSubTasks = 3;
+  optional bool include_sub_tasks = 3;
 }
 
 message GetAllTasksResponse {

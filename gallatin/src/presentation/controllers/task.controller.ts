@@ -3,7 +3,7 @@ import { HttpStatus, Logger } from '@nestjs/common';
 import { GrpcMethod, GrpcService } from '@nestjs/microservices';
 import {
   CreateTaskRequest,
-  CreateTaskResponse,
+  OneTaskResponse,
   Meta,
   TASK_SERVICE_NAME,
   TaskServiceController,
@@ -36,7 +36,7 @@ export class TaskController
     request: CreateTaskRequest,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     metadata?: Metadata, // we can send and receive authorization data here
-  ): Promise<CreateTaskResponse> {
+  ): Promise<OneTaskResponse> {
     try {
       const newTask = await this.createTaskUseCase.createTask(request);
       return {

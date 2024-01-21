@@ -38,6 +38,6 @@ COPY --from=builder /home/node/app/src/migration ./src/migration
 EXPOSE 5000
 
 RUN chmod +x docker-entrypoint.sh
-ENTRYPOINT ["./docker-entrypoint.sh"]
+ENTRYPOINT ["docker-entrypoint.sh"]
 
 CMD [ "npm", "run", "start:prod" ]

@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { Logger, ValidationPipe } from '@nestjs/common';
-import { BffModule } from './bff.module';
+import { BffModule } from 'bff.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { NODE_ENV, APP_CONFIG } from './infrastructure/config';
+import { NODE_ENV, APP_CONFIG } from 'infrastructure/config';
 import { join } from 'path';
 
 process.env.__proto_path = join(__dirname, 'infrastructure/proto/');

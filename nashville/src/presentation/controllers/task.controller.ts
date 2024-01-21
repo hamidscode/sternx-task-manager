@@ -21,11 +21,13 @@ import {
 } from 'presentation/DTOs';
 import { GallatinProxy } from 'application/services';
 import {
-  CreateTaskApiResponse, DeleteTaskApiResponse, DestroyTaskApiResponse,
+  CreateTaskApiResponse,
+  DeleteTaskApiResponse,
+  DestroyTaskApiResponse,
   GetAllTasksApiResponse,
   GetTaskByIdApiResponse,
-  UpdateTaskApiResponse
-} from "presentation/api-respons-schema";
+  UpdateTaskApiResponse,
+} from 'presentation/api-respons-schema';
 
 @ApiTags('task-manager')
 @Controller('/task')

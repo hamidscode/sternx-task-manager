@@ -10,6 +10,7 @@ import {
   Default,
 } from 'sequelize-typescript';
 
+
 export class BaseModel extends Model {
   @PrimaryKey
   @AllowNull(false)

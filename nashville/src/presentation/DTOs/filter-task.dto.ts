@@ -1,6 +1,6 @@
-import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsOptional, IsString, IsUUID } from 'class-validator';
 import { PaginationDto } from './pagination.dto';
-import { Type } from 'class-transformer';
+import { Type, Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class FilterTaskDto extends PaginationDto {
@@ -15,7 +15,7 @@ export class FilterTaskDto extends PaginationDto {
     description: 'id of parent task',
     example: 'f37fb146-0090-438b-a72b-8ad7e705a325',
   })
-  @IsString()
+  @IsUUID()
   @IsOptional()
   parent_id?: string;
 
@@ -28,6 +28,8 @@ export class FilterTaskDto extends PaginationDto {
   })
   @IsBoolean()
   @IsOptional()
-  @Type(() => Boolean)
-  include_sub_tasks?: boolean = true;
+  @Transform(
+    ({ value }) => typeof value === 'string' && value.toLowerCase() === 'true',
+  )
+  include_sub_tasks?: boolean;
 }

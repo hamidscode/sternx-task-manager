@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import {Transform, Type} from 'class-transformer';
 import { IsBoolean, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -12,6 +12,8 @@ export class TaskHierarchyTreeRequestDto {
   })
   @IsBoolean()
   @IsOptional()
-  @Type(() => Boolean)
-  include_sub_tasks?: boolean = true;
+  @Transform(
+    ({ value }) => typeof value === 'string' && value.toLowerCase() === 'true',
+  )
+  include_sub_tasks?: boolean;
 }

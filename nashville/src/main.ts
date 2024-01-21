@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { BffModule } from './bff.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NODE_ENV, APP_CONFIG } from './infrastructure/config';
@@ -22,6 +22,14 @@ async function bootstrap() {
       swaggerOptions: { docExpansion: 'none' },
     });
   }
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: false,
+      },
+    }),
+  );
   await app.listen(APP_CONFIG().APP_PORT);
   const url = await app.getUrl();
   Logger.log(`Nashville micro-service is running on: ${url}`);
